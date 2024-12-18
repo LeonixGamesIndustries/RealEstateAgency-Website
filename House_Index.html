@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(self)">
+    <title>RealEstateAgent</title>
+</head>
+<style>
+    .body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+    .topBox {
+        border-bottom: 1.5px outset rgb(0, 0, 0);
+        background-color: rgb(255, 255, 255);
+    }
+    .infoBox{
+        padding-top: 0px;
+        padding-bottom: 10px;
+    }
+    .content{
+        border-top: 1px outset black;
+    }
+    .logoImg{
+        text-align: center;
+        padding-left: 45%;
+    }
+    .mainMap{
+        border-width: 1px outset rgb(0,0,0);
+        padding-top: 25px;
+        padding-right: 0px;
+        padding-bottom: 5%;
+    }
+    .houseImages{
+        display: grid;
+        grid-template-columns: repeat(3, 1px); /* 3 colonne uguali */
+        gap: 25px;
+        column-gap: 100px;
+    }
+    .image{
+        border: 1px outset black;
+        box-shadow: -5px 5px 10px gray;
+    }
+    .search-container {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    margin-top: 50px;
+    padding-bottom: 25px;
+    padding-left: 25px;
+    }
+    /* Search box con input e pulsante interattivo */
+    .search-box {
+    position: relative;
+    padding-right: 100px;
+    width: 400px;
+    }
+    #searchForm {
+    width: 100%;
+    padding: 10px 35px 10px 10px; /* Spazio a sinistra per il pulsante */
+    font-size: 16px;
+    border: 1px solid #000;
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    }
+    #searchBox:focus {
+        border: none;
+    border-color: #555;
+    }
+    .search-box input[type="text"] {
+      border: none; /* Removes the border */
+      padding: 0px 15px;
+      font-size: 16px;
+      outline: none; /* Removes the blue outline on focus */
+      flex-grow: 1;
+    }
+    /* Posizionamento del pulsante interno */
+    .search-box button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: 0px outset transparent;
+    font-size: 18px;
+    cursor: pointer;
+    color: #555;
+    }
+    .search-box button:hover {
+    color: #333;
+    }
+    .dropdown {
+      position: relative;
+      padding-right: 25px;
+      display: inline-block;
+    }
+    .dropdown button {
+      background-color: transparent;
+      color: black;
+      padding: 10px 30px;
+      font-size: 16px;
+      border: 1px outset black;
+      border-radius: 50px; /* Makes the button oval */
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .dropdown button:hover {
+      background-color: #0056b3;
+    }
+    .dropdown-content {
+      display: none; /* Hidden by default */
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 25px; /* Rounded dropdown */
+      overflow: hidden;
+    }
+    .dropdown-content label {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .dropdown-content label:hover {
+      background-color: #f1f1f1;
+    }
+    .dropdown-content input[type="radio"] {
+      margin-right: 10px;
+    }
+    /* Show the dropdown when hovering over the dropdown container */
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .address{
+        text-align: center;
+    }
+    .carousel {
+      max-width: 97.5%;
+      margin: 50px auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel img {
+      width: 100%;
+      display: none;
+    }
+
+    .carousel img.active {
+      display: block;
+    }
+
+    /* Navigation buttons */
+    .carousel-buttons {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+
+    .carousel-buttons button {
+      background-color: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .carousel-buttons button:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .price{
+      text-align: center;
+    }
+
+    .houseAddress{
+      text-align: center;
+    }
+    .grid-container {
+      padding-left: 37%;
+      display: grid; /* Create a grid container */
+      grid-template-columns: 10% 10% 17.5%; /* Two equal columns */
+      gap: 20px; /* Space between columns */
+    }
+
+    .grid-item {
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    .text-container {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    /* Hide the extra text by default */
+    .extra-text {
+      display: none;
+    }
+
+    /* Styling for the button */
+    .show-more-btn {
+      display: block;
+      margin: 10px 0;
+      padding: 8px 12px;
+      background-color: transparent;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .show-more-btn:hover {
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      background: transparent;
+      width: 100%;
+      max-width: 400px;
+      padding-left: 37%;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+</style>
+<body>
+
+    <div class="topBox">
+        
+        <img class="logoImg" src="Logo.png" width="125" height="125">
+
+    </div>
+    
+    <div class="infoBox">
+        <div class="search-container">
+            <div class="search-box">
+              <form id="searchForm" class="search-box">
+                <input id="searchInput" type="text" name="query" placeholder="Search..." required>
+                <button type="submit">🔍</button>
+              </form>
+        </div>
+        <div class="dropdown">
+          <button>For Sale</button>
+          <div class="dropdown-content">
+              <label>
+                  <input type="radio" name="dropdown-option" value="Option 1">
+                  For Sale
+                </label>
+                <label>
+                  <input type="radio" name="dropdown-option" value="Option 2">
+                  For Rent
+                </label>
+                <label>
+                  <input type="radio" name="dropdown-option" value="Option 3">
+                  Sold
+              </label>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>Price</button>
+          <div class="dropdown-content">
+              <label>
+                  Min: <textarea>€/$</textarea>
+                </label>
+                <label>
+                  Max: <textarea>€/$</textarea>
+                </label>
+              </label>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>Beds & Baths</button>
+          <div class="dropdown-content">
+              <label>
+                  Bedrooms: <textarea></textarea>
+                </label>
+                <label>
+                  Bathrooms: <textarea name="" id=""></textarea>
+                </label>
+              </label>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>Home Type</button>
+          <div class="dropdown-content">
+              <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 1">
+                  Mansion
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 2">
+                  Detatched
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 3">
+                  Cottage
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Flat
+                </label> 
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Semi-Detatched
+                </label> 
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Bungalow
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Attic
+                </label>          
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>More</button>
+          <div class="dropdown-content">
+              <label>
+                  Coming Soon
+                </label>
+              </label>
+          </div>
+        </div>
+    </div>
+
+    <div class="content">
+      <div class="carousel">
+        <img src="trasferimento.jpeg" alt="Photo 1" class="active">
+        <img src="trasferimento1.jpg" alt="Photo 2">
+        <img src="trasferimento2.webp" alt="Photo 3">
+        <img src="trasferimento3.webp" alt="Photo 5">
+        <img src="trasferimento4.webp" alt="Photo 6">
+        <img src="trasferimento5.jpeg" alt="Photo 7">
+        <img src="trasferimento6.jpg" alt="Photo 8">
+        <img src="trasferimento7.webp" alt="Photo 9">
+        <img src="trasferimento8.jpg" alt="Photo 10">
+        <img src="trasferimneto9.webp" alt="Photo 11">
+        <img src="trasferimento10.webp" alt="Photo 12">
+        <img src="trasferimento11.webp" alt="Photo 13">
+        <img src="trasferimento12.webp" alt="Photo 14">
+        <img src="immagine 18.jpg" alt="Photo 4">
+        <img src="planimetria 2.jpg" alt="Photo 4">
+    
+        <div class="carousel-buttons">
+          <button id="prev">❮ Prev</button>
+          <button id="next">Next ❯</button>
+        </div>
+      </div>
+
+          <h1 class="price">$18,500,000</h1>
+          <h3 class="houseAddress">1475 Bel Air Road, Los Angeles, CA 90077</h3>
+  
+        <div class="grid-container">
+          <h2 class="grid-item">7 <br> beds</h2>
+          <h2 class="grid-item">9 <br> baths</h2>
+          <h2 class="grid-item">1142,7074 <br> m2</h2>
+        </div>
+        <hr>
+        <div class="HouseDescription">
+          <div class="text-container">
+            <p>
+              This house is situated in the middle of Bel Air, near the Beverly Hills district of Los Angeles.
+              <br>
+              The house is a mansion and has two flats.
+              <br>
+              The first flat contains four of the seven bedrooms that are built in this house.
+              <br>
+              Every room has an own bathroom and sometimes has a balcony.
+              <br>
+              <span class="extra-text">
+                A pool is situated inside the ground floor and even an indoor and an outdoor dining room.
+                <br>
+                In the right side of the ground floor is situated a study room that is right in between the garages.
+                <br>
+                In the basement of the house ther is a whole cinema and in front of it you can see the bottom of the pool.
+                <br>
+                The house is meant for manteining the privacy of the people who lives inside it.
+                <br>
+                The mansion is situated a bit far away from the city center, but from there you should be able to see the famous Hollywood sign.
+              </span>
+            </p>
+            <button class="show-more-btn" onclick="toggleText()">Show More</button>
+          </div>
+
+        </div>
+        <div class="container">
+          <h1>Distance Calculator</h1>
+          <p>Type a destination:</p>
+      
+          <input type="text" id="destination" placeholder="Type a destination (es. Milan)">
+          <button onclick="calculateDistance()">Calculate Distance</button>
+      
+          <div class="result" id="result"></div>
+        </div>
+        <hr>
+        <iframe class="mainMap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3303.9065180916737!2d-118.4492117242325!3d34.09753517314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bcfdc172c44f%3A0x1b096e86ec235ad3!2s1475%20Bel%20Air%20Rd%2C%20Los%20Angeles%2C%20CA%2090077%2C%20Stati%20Uniti!5e0!3m2!1sit!2sit!4v1734537042314!5m2!1sit!2sit" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    
+    </div>
+
+    <div class="address">
+        <address>
+            Written by <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0">Simone Brancaglion</a>.<br>
+            Visit us at:<br>
+            Diffidati.com<br>
+            Via XXV Aprile 141, Nichelino<br>
+            To
+            </address>
+    </div>
+
+</body>
+<script>
+    // JavaScript functionality to check for specific text
+    const images = document.querySelectorAll('.carousel img');
+    let current = 0;
+
+    document.getElementById('prev').addEventListener('click', () => {
+      images[current].classList.remove('active');
+      current = (current === 0) ? images.length - 1 : current - 1;
+      images[current].classList.add('active');
+    });
+
+    document.getElementById('next').addEventListener('click', () => {
+      images[current].classList.remove('active');
+      current = (current === images.length - 1) ? 0 : current + 1;
+      images[current].classList.add('active');
+    });
+
+    function toggleText() {
+      const extraText = document.querySelector('.extra-text');
+      const btn = document.querySelector('.show-more-btn');
+
+      // Toggle the visibility of the extra text
+      if (extraText.style.display === 'none' || extraText.style.display === '') {
+        extraText.style.display = 'inline';
+        btn.textContent = 'Show Less';
+      } else {
+        extraText.style.display = 'none';
+        btn.textContent = 'Show More';
+      }
+    }
+    function haversine(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Raggio della Terra in km
+      const toRad = (angle) => (angle * Math.PI) / 180;
+
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c; // Distanza in chilometri
+    }
+
+    function calculateDistance() {
+      const destination = document.getElementById('destination').value.trim();
+      const resultDiv = document.getElementById('result');
+
+      if (!destination) {
+        resultDiv.innerHTML = '<p>Please, type a destination.</p>';
+        return;
+      }
+
+      // Punto di partenza fisso: Roma (latitudine: 41.9028, longitudine: 12.4964)
+      const fixedLat = 34.09767732313514; // Latitudine di Roma
+      const fixedLon = -118.44667971894107; // Longitudine di Roma
+
+      // Richiediamo le coordinate della destinazione
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(destination)}&format=json&limit=1`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length === 0) {
+            resultDiv.innerHTML = `<p>Can't find your destination, please try again.</p>`;
+            return;
+          }
+
+          const destLat = parseFloat(data[0].lat);
+          const destLon = parseFloat(data[0].lon);
+
+          // Calcoliamo la distanza tra Roma e la destinazione
+          const distance = haversine(fixedLat, fixedLon, destLat, destLon);
+          resultDiv.innerHTML = `
+            <p><strong>Your location:</strong> 1475 Bel Air Road</p>
+            <p><strong>Destinazion:</strong> ${destination}</p>
+            <p><strong>Distance:</strong> ${distance.toFixed(2)} km</p>
+          `;
+        })
+        .catch(err => {
+          resultDiv.innerHTML = `<p>Errore nel recupero dei dati: ${err.message}</p>`;
+        });
+    }
+  </script>
+</html>

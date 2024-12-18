@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealEstateAgent</title>
+</head>
+<style>
+    .body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+    .topBox {
+        border-bottom: 1.5px outset rgb(0, 0, 0);
+        background-color: rgb(255, 255, 255);
+    }
+    .infoBox{
+        padding-top: 0px;
+        padding-bottom: 10px;
+    }
+    .content{
+        border-top: 1px outset black;
+    }
+    .logoImg{
+        text-align: center;
+        padding-left: 45%;
+    }
+    .mainMap{
+        border-width: 1px outset rgb(0,0,0);
+        padding-top: 25px;
+        padding-right: 0px;
+    }
+    .houseImages{
+        display: grid;
+        grid-template-columns: repeat(3, 1px); /* 3 colonne uguali */
+        gap: 100px;
+        column-gap: 200px;
+    }
+    .image{
+        border: 1px outset black;
+        box-shadow: -5px 5px 10px gray;
+    }
+    .search-container {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    margin-top: 50px;
+    padding-bottom: 25px;
+    padding-left: 25px;
+    }
+    /* Search box con input e pulsante interattivo */
+    .search-box {
+    position: relative;
+    padding-right: 100px;
+    width: 400px;
+    }
+    #searchForm {
+    width: 100%;
+    padding: 10px 35px 10px 10px; /* Spazio a sinistra per il pulsante */
+    font-size: 16px;
+    border: 1px solid #000;
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    }
+    #searchBox:focus {
+        border: none;
+    border-color: #555;
+    }
+    .search-box input[type="text"] {
+      border: none; /* Removes the border */
+      padding: 0px 15px;
+      font-size: 16px;
+      outline: none; /* Removes the blue outline on focus */
+      flex-grow: 1;
+    }
+    /* Posizionamento del pulsante interno */
+    .search-box button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: 0px outset transparent;
+    font-size: 18px;
+    cursor: pointer;
+    color: #555;
+    }
+    .search-box button:hover {
+    color: #333;
+    }
+    .dropdown {
+      position: relative;
+      padding-right: 25px;
+      display: inline-block;
+    }
+    .dropdown button {
+      background-color: transparent;
+      color: black;
+      padding: 10px 30px;
+      font-size: 16px;
+      border: 1px outset black;
+      border-radius: 50px; /* Makes the button oval */
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .dropdown button:hover {
+      background-color: #0056b3;
+    }
+    .dropdown-content {
+      display: none; /* Hidden by default */
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 25px; /* Rounded dropdown */
+      overflow: hidden;
+    }
+    .dropdown-content label {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .dropdown-content label:hover {
+      background-color: #f1f1f1;
+    }
+    .dropdown-content input[type="radio"] {
+      margin-right: 10px;
+    }
+    /* Show the dropdown when hovering over the dropdown container */
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .address{
+        text-align: center;
+    }
+    .container {
+      display: flex; /* Use Flexbox for layout */
+      justify-content: flex-start; /* Align items to the start (no space between) */
+      gap:10%; /* Optional: Add a small gap between items */
+      align-items: center; /* Vertically center items */
+      padding-bottom: 10%;
+    }
+    .item {
+      background-color: lightblue;
+      padding: 20px;
+      margin: 0%; /* Remove margin to avoid extra space */
+    }
+    
+</style>
+<body>
+
+    <div class="topBox">
+        
+        <img class="logoImg" src="Logo.png" width="125" height="125">
+
+    </div>
+    
+    <div class="infoBox">
+        <div class="search-container">
+            <div class="search-box">
+              <form id="searchForm" class="search-box">
+                <input id="searchInput" type="text" name="query" placeholder="Search..." required>
+                <button type="submit">🔍</button>
+              </form>
+        </div>
+        <div class="dropdown">
+          <button>For Sale</button>
+          <div class="dropdown-content">
+              <label>
+                  <input type="radio" name="dropdown-option" value="Option 1">
+                  For Sale
+                </label>
+                <label>
+                  <input type="radio" name="dropdown-option" value="Option 2">
+                  For Rent
+                </label>
+                <label>
+                  <input type="radio" name="dropdown-option" value="Option 3">
+                  Sold
+              </label>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>Price</button>
+          <div class="dropdown-content">
+              <label>
+                  Min: <textarea>€/$</textarea>
+                </label>
+                <label>
+                  Max: <textarea>€/$</textarea>
+                </label>
+              </label>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>Beds & Baths</button>
+          <div class="dropdown-content">
+              <label>
+                  Bedrooms: <textarea></textarea>
+                </label>
+                <label>
+                  Bathrooms: <textarea name="" id=""></textarea>
+                </label>
+              </label>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>Home Type</button>
+          <div class="dropdown-content">
+              <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 1">
+                  Mansion
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 2">
+                  Detatched
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 3">
+                  Cottage
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Flat
+                </label> 
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Semi-Detatched
+                </label> 
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Bungalow
+                </label>
+                <label>
+                  <input type="checkbox" name="dropdown-option" value="Option 4">
+                  Attic
+                </label>          
+          </div>
+        </div>
+        <div class="dropdown">
+          <button>More</button>
+          <div class="dropdown-content">
+              <label>
+                  Coming Soon
+                </label>
+              </label>
+          </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container">
+        
+      <iframe class="mainMap" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52871.867290257585!2d-118.44073354686773!3d34.0825420249834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bc04d6d147ab%3A0xd6c7c379fd081ed1!2sBeverly%20Hills%2C%20California%2C%20Stati%20Uniti!5e0!3m2!1sit!2sit!4v1734378798647!5m2!1sit!2sit" width="750" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    
+        <div class="houseImages">
+            <img class="image" src="immagine.jpeg" alt="photo1" width="125" height="125">
+            <img class="image" src="immagine1.jpeg" alt="photo2" width="125" height="125">
+            <img class="image" src="immagine2.jpeg" alt="photo3" width="125" height="125">
+            <img class="image" src="immagine3.jpeg" alt="photo4" width="125" height="125">
+            <a href="House_Index.html" class="houseLink"><img class="image" src="trasferimento.jpeg" alt="photo4" width="125" height="125"></a>
+            <img class="image" src="immagine4.jpeg" alt="photo6" width="125" height="125">
+            <img class="image" src="immagine5.jpeg" alt="photo7" width="125" height="125">
+            <img class="image" src="immagine6.jpeg" alt="photo8" width="125" height="125">
+            <img class="image" src="immagine7.jpeg" alt="photo9" width="125" height="125">
+        </div>
+    </div>
+
+    <div class="address">
+        <address>
+            Written by <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0">Simone Brancaglion</a>.<br>
+            Visit us at:<br>
+            Diffidati.com<br>
+            Via XXV Aprile 141, Nichelino<br>
+            To
+            </address>
+    </div>
+
+</body>
+<script>
+    // JavaScript functionality to check for specific text
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+
+    searchForm.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+
+      const query = searchInput.value.trim();
+
+      // Check if the query contains the word "apple"
+      if (query.toLowerCase().includes("beverly hills")) {
+        goToPage("BeverlyHillsSearch_Index.html");
+      } else {
+        goToPage("NoPageFound_Index.html")
+      }
+
+      // Clear the search input
+      searchInput.value = '';
+    });
+    function goToPage(page) {
+      // Replace 'target-page.html' with the URL you want to navigate to
+      window.location.href = page;
+    }
+  </script>
+</html>
